@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Amatarmart</title>
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e0f11" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<style>
+:root{
+  --bg:#fff; --ink:#111417; --muted:#6b7177; --line:#e8eaed; --field:#f1f3f4; --chip:#f1f3f4;
+  --tile:#f6f7f8; --pill:#111417; --pill-ink:#fff; --accent:#111417;
+  --amz-link:#007185; --amz-star:#de7921; --amz-price:#0f1111; --amz-save:#cc0c39;
+  --wmt-blue:#0053e2; --wmt-green:#2a8703; --wmt-star:#111417;
+  --tgt-red:#cc0000; --tgt-star:#f5b800; --tgt-green:#008300;
+  color-scheme:light dark;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#0e0f11; --ink:#f2f3f5; --muted:#9aa0a6; --line:#25282c; --field:#1b1d20; --chip:#1b1d20;
+  --tile:#fff; --pill:#f2f3f5; --pill-ink:#0e0f11; --accent:#f2f3f5;
+  --amz-link:#5cc8d7; --amz-star:#f0a14a; --amz-price:#f2f3f5; --amz-save:#ff6b81;
+  --wmt-blue:#6ea4ff; --wmt-green:#6fcf3f; --wmt-star:#f2f3f5;
+  --tgt-red:#ff5a5a; --tgt-green:#5fd35f;
+}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.35 -apple-system,BinaryFontSystem,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+main{max-width:640px;margin:0 auto}
+
+/* header */
+header{position:sticky;top:0;z-index:5;background:var(--bg);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;max-width:640px;margin:0 auto}
+header.stuck{box-shadow:0 1px 0 var(--line)}
+.brand{font-weight:800;font-size:22px;letter-spacing:-.03em;margin:0 0 10px;line-height:1}
+.brand .a{color:#e47911}.brand .t{color:#cc0000}.brand .w{color:#0053e2}
+@media (prefers-color-scheme:dark){.brand .a{color:#ff9900}.brand .t{color:#ff4d4d}.brand .w{color:#5b9bff}}
+body.has-results .brand{display:none}
+.search{position:relative;display:flex;align-items:center}
+.search svg{position:absolute;left:14px;width:20px;height:20px;color:var(--muted);pointer-events:none}
+.search input{width:100%;height:48px;border-radius:24px;border:0;background:var(--field);color:var(--ink);
+  font-size:17px;padding:0 44px 0 44px;outline:none;appearance:none}
+.search input:focus{box-shadow:0 0 0 2px var(--accent)}
+.search input::placeholder{color:var(--muted)}
+.search input::-webkit-search-cancel-button{display:none}
+#clear{position:absolute;right:6px;width:40px;height:40px;border-radius:20px;color:var(--muted);font-size:20px;display:none}
+.search.filled #clear{display:block}
+
+/* logo tile */
+.logo{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 1px 3px rgba(0,0,0,.12)}
+.logo img{width:16px;height:16px;display:block}
+.logo.walmart{background:#0053e2}
+
+/* home */
+#home{padding:6px 16px 0}
+.tagline{color:var(--muted);margin:2px 0 22px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{background:var(--chip);border-radius:18px;padding:9px 14px;font-size:15px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* status */
+.status{padding:10px 16px 8px;color:var(--muted);font-size:13px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.status b{color:var(--ink);font-weight:600}
+.warn{margin:0 16px 8px;padding:10px 12px;border-radius:10px;background:var(--field);font-size:13px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;align-items:center}
+.warn button{font-weight:700;color:var(--ink);flex:none}
+.empty{padding:56px 24px;text-align:center;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:17px;margin-bottom:6px}
+
+/* rows: shared frame */
+.row{position:relative;border-bottom:1px solid var(--line)}
+.row.dim{opacity:.72}
+.row a{display:flex;gap:12px;padding:14px 16px;color:inherit;text-decoration:none}
+.row a:active{background:var(--field)}
+.pic{position:relative;flex:none;width:112px;height:112px;border-radius:10px;background:var(--tile);overflow:hidden}
+.pic img.p{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;padding:6px}
+@media (prefers-color-scheme:dark){.pic img.p{mix-blend-mode:normal}}
+.pic .logo{position:absolute;left:6px;top:6px}
+.body{flex:1;min-width:0;padding-right:2px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.tag{font-size:11px;font-weight:700;letter-spacing:.02em;padding:3px 8px;border-radius:6px;background:var(--chip);color:var(--ink)}
+.tag.best{background:var(--pill);color:var(--pill-ink)}
+.title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin:0}
+.stars{display:inline-block;position:relative;font-size:14px;line-height:1;letter-spacing:1px;color:var(--line);vertical-align:-1px}
+.stars::before{content:"★★★★★"}
+.stars i{position:absolute;left:0;top:0;overflow:hidden;white-space:nowrap;font-style:normal}
+.stars i::before{content:"★★★★★"}
+.rate{display:flex;align-items:center;gap:5px;margin-top:4px;font-size:13px}
+.ship{margin-top:4px;font-size:13px}
+.sub{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* Amazon skin: light title, orange stars, teal count, superscript price */
+.amazon .title{font-size:15px;line-height:1.3;-webkit-line-clamp:3;color:var(--amz-price)}
+.amazon .stars i{color:var(--amz-star)}
+.amazon .rate .n{color:var(--amz-link)}
+.amazon .bought{font-size:12px;color:var(--muted);margin-top:2px}
+.amazon .price{margin-top:5px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.amazon .now{font-size:26px;line-height:1;color:var(--amz-price);display:inline-flex;align-items:flex-start}
+.amazon .now sup{font-size:12px;line-height:1;margin-top:3px}
+.amazon .was{font-size:12px;color:var(--muted)}
+.amazon .was s{text-decoration:line-through}
+.amazon .ship b{font-weight:700}
+.amazon .prime{color:#1a98ff;font-weight:800;font-style:italic;font-size:13px;letter-spacing:-.02em}
+.amazon .abadge{display:inline-block;font-size:11px;padding:2px 7px;border-radius:3px;background:#232f3e;color:#fff;margin-bottom:5px}
+.amazon .abadge.bs{background:#c45500}
+
+/* Walmart skin: price leads, bold blue accents, rounded pills */
+.walmart .price{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+.walmart .now{font-size:20px;font-weight:800;line-height:1.1}
+.walmart .now.deal{color:var(--wmt-green)}
+.walmart .was{font-size:12px;color:var(--muted);text-decoration:line-through}
+.walmart .title{font-size:14px;margin-top:3px}
+.walmart .stars{font-size:12px}
+.walmart .stars i{color:var(--wmt-star)}
+.walmart .rate{font-size:12px;color:var(--muted)}
+.walmart .ship b{font-weight:700}
+.walmart .wflag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:5px;background:rgba(0,83,226,.1);color:var(--wmt-blue)}
+.walmart .wflag.red{background:rgba(222,28,36,.1);color:#de1c24}
+.walmart .wplus{color:var(--wmt-blue);font-weight:700}
+
+/* Target skin: bold title, red sale price, green fulfillment */
+.target .brandline{font-size:12px;color:var(--muted);margin-bottom:1px}
+.target .title{font-size:14px;font-weight:600}
+.target .stars{font-size:13px}
+.target .stars i{color:var(--tgt-star)}
+.target .rate{font-size:12px;color:var(--muted)}
+.target .price{margin-top:4px;display:flex;align-items:baseline;gap:7px;flex-wrap:wrap}
+.target .now{font-size:18px;font-weight:700}
+.target .now.deal{color:var(--tgt-red)}
+.target .was{font-size:12px;color:var(--muted)}
+.target .ship{color:var(--tgt-green);font-weight:600}
+.target .tflag{display:inline-block;font-size:11px;font-weight:700;color:var(--tgt-red);margin-bottom:3px}
+
+/* skeleton */
+.sk{display:flex;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.sk i{display:block;border-radius:8px;background:linear-gradient(90deg,var(--field) 25%,var(--line) 50%,var(--field) 75%);background-size:200% 100%;animation:sh 1.2s linear infinite}
+.sk .p{width:112px;height:112px;flex:none}.sk div{flex:1;display:grid;gap:9px;align-content:start;padding-top:4px}
+.sk .l1{height:14px}.sk .l2{height:14px;width:70%}.sk .l3{height:22px;width:34%}.sk .l4{height:12px;width:55%}
+@keyframes sh{to{background-position:-200% 0}}
+.looking{display:flex;align-items:center;gap:8px}
+.looking .logo{animation:pulse 1.2s ease-in-out infinite}
+.looking .logo:nth-child(2){animation-delay:.2s}.looking .logo:nth-child(3){animation-delay:.4s}
+@keyframes pulse{50%{transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){.sk i,.looking .logo{animation:none}}
+
+/* password gate */
+#gate{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;justify-content:center;gap:12px;padding:24px;max-width:420px;margin:0 auto}
+#gate[hidden]{display:none}
+#gate .brand{display:block;font-size:30px;margin:0}
+#gate p{margin:0;color:var(--muted)}
+#gate input{height:52px;border-radius:14px;border:0;background:var(--field);color:var(--ink);font-size:17px;padding:0 16px;outline:none}
+#gate input:focus{box-shadow:0 0 0 2px var(--accent)}
+#gate button{height:52px;border-radius:14px;background:var(--pill);color:var(--pill-ink);font-weight:700;font-size:17px}
+#gateerr{color:var(--tgt-red)!important;min-height:1.3em;font-size:14px}
+</style>
+</head>
+<body>
+<header id="hdr">
+  <h1 class="brand"><span class="a">Ama</span><span class="t">tar</span><span class="w">mart</span></h1>
+  <form class="search" id="form" role="search" action="#">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M17.2587 17.2593L21.2488 21.2494M19.75 11.2486C19.75 15.9419 15.9444 19.7465 11.25 19.7465C6.55558 19.7465 2.75 15.9419 2.75 11.2486C2.75 6.55528 6.55558 2.75061 11.25 2.75061C15.9444 2.75061 19.75 6.55528 19.75 11.2486Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <input id="q" type="search" enterkeyhint="search" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="Search or paste a store link" aria-label="Search Amazon, Target and Walmart">
+    <button type="button" id="clear" aria-label="Clear search">&#x2715;</button>
+  </form>
+</header>
+
+<main>
+  <section id="home">
+    <p class="tagline">One search. Amazon, Target and Walmart, best first.</p>
+    <div class="chips" id="recent"></div>
+  </section>
+  <section id="results" aria-live="polite"></section>
+</main>
+
+<form id="gate" hidden>
+  <h1 class="brand"><span class="a">Ama</span><span class="t">tar</span><span class="w">mart</span></h1>
+  <p>Enter the house password. This phone will remember it.</p>
+  <input id="pw" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password">
+  <button type="submit">Open</button>
+  <p id="gateerr" role="alert"></p>
+</form>
+
+<script src="app.js"></script>
+</body>
+</html>

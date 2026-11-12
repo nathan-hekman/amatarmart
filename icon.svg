@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#fff"/>
+  <!-- three store colors as one shopping bag: orange, red, blue bands -->
+  <path d="M176 196v-28a80 80 0 0 1 160 0v28" fill="none" stroke="#111417" stroke-width="26" stroke-linecap="round"/>
+  <clipPath id="b"><path d="M120 196h272l22 196a36 36 0 0 1-36 40H134a36 36 0 0 1-36-40z"/></clipPath>
+  <g clip-path="url(#b)">
+    <rect x="90" y="196" width="111" height="250" fill="#FF9900"/>
+    <rect x="201" y="196" width="110" height="250" fill="#CC0000"/>
+    <rect x="311" y="196" width="115" height="250" fill="#0053E2"/>
+  </g>
+</svg>
