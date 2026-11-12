@@ -22,6 +22,8 @@ async function findBase(){
   local.set("am_base", base);
   return base;
 }
+// A remembered address can be a retired one; check the current one on every open.
+if (!SELF_HOSTED) findBase().catch(() => {});
 async function api(path, opts = {}){
   const go = () => fetch(base + "/" + path, {...opts, headers:{...(opts.headers || {}), Authorization:"Bearer " + (local.get("am_token") || "")}});
   let r;
@@ -45,17 +47,29 @@ function gate(show){
 $("#gate").addEventListener("submit", async e => {
   e.preventDefault();
   $("#gateerr").textContent = "";
+  // Copying the whole text message brings its "Amatarmart password:" label along.
+  const password = $("#pw").value.trim().replace(/^amatarmart password:\s*/i, "");
+  const send = async () => {
+    const r = await fetch(base + "/api/login", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({password})});
+    // Only the server itself says 200, 401 or 429. Anything else is a broken
+    // route (old address, Mac asleep), never a wrong password.
+    if (![200, 401, 429].includes(r.status)) throw new Error("answer " + r.status);
+    return r;
+  };
+  let r;
   try {
     if (base == null) await findBase();
-    let r;
-    try { r = await fetch(base + "/api/login", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({password:$("#pw").value})}) }
-    catch { await findBase(); r = await fetch(base + "/api/login", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({password:$("#pw").value})}) }
-    if (r.status === 429){ $("#gateerr").textContent = "Too many tries. Wait a few minutes."; return }
-    if (!r.ok){ $("#gateerr").textContent = "That is not it. Try again."; $("#pw").select(); return }
-    local.set("am_token", (await r.json()).token);
-    $("#pw").value = ""; gate(false); loadRecent();
-    if (state.query) search(state.query); else $("#q").focus();
-  } catch { $("#gateerr").textContent = "The search server is not answering. Try again in a minute." }
+    try { r = await send() } catch { await findBase(); r = await send() }
+  } catch (err){
+    const host = base ? new URL(base, location.href).host : "no address";
+    $("#gateerr").textContent = "Cannot reach the search server (" + host + ": " + (err.message || err) + "). Try again in a minute.";
+    return;
+  }
+  if (r.status === 429){ $("#gateerr").textContent = "Too many tries. Wait a few minutes."; return }
+  if (r.status === 401){ $("#gateerr").textContent = "That is not it. Try again."; $("#pw").select(); return }
+  local.set("am_token", (await r.json()).token);
+  $("#pw").value = ""; gate(false); loadRecent();
+  if (state.query) search(state.query); else $("#q").focus();
 });
 
 /* ---- rendering ---- */
